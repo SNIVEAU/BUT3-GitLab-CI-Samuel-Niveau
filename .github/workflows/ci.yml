@@ -1,4 +1,4 @@
-name: Flake8
+name: CI
 
 on: [push]
 
@@ -22,8 +22,9 @@ jobs:
     - name: Analyser la syntaxe avec flake8
       run: |
         flake8 $(git ls-files '*.py')
-    - name: Tests avec pytest
+
+    - name: Tests avec pytest et coverage
+      env:
+        PYTHONPATH: src
       run: |
-        PYTHONPATH=src pytest tests/
-
-
+        pytest --cov=greeting tests/
