@@ -23,8 +23,14 @@ jobs:
       run: |
         flake8 $(git ls-files '*.py')
 
-    - name: Tests avec pytest et coverage
+    - name: Tests avec pytest et coverage + rapport HTML
       env:
         PYTHONPATH: src
       run: |
-        pytest --cov=greeting --cov-fail-under=90 tests/
+        pytest --cov=greeting --cov-fail-under=90 --cov-report=html tests/
+
+    - name: Upload du rapport de couverture HTML
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-html
+        path: htmlcov/
