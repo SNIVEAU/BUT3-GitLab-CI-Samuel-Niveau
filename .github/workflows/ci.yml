@@ -32,5 +32,5 @@ jobs:
     - name: Upload du rapport de couverture HTML
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-html
+        name: coverage-html-${{ matrix.python-version }}
         path: htmlcov/
