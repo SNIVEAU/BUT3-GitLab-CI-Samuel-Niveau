@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps:
+      - name: Tests avec pytest et coverage + rapport HTML
+        env:
+          PYTHONPATH: src
+        run: |
+          pytest --cov=greeting --cov-fail-under=90 --cov-report=html tests/
+
+      - name: Upload du rapport de couverture HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: htmlcov/
