@@ -27,4 +27,4 @@ jobs:
       env:
         PYTHONPATH: src
       run: |
-        pytest --cov=greeting tests/
+        pytest --cov=greeting --cov-fail-under=90 tests/
