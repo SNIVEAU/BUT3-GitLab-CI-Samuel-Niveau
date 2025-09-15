@@ -70,7 +70,7 @@ jobs:
               run: flake8 $(git ls-files '*.py')
 
             - name: Tests avec pytest et coverage + rapport HTML
-              run: pytest --cov=greeting --cov-fail-under=90 --cov-report=html tests/
+              run: pytest --cov-config=.coveragerc
 
             - name: Upload du rapport de couverture HTML
               uses: actions/upload-artifact@v4
