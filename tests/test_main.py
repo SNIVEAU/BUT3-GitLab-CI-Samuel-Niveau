@@ -12,4 +12,3 @@ def test_add():
 
 def test_sub():
     assert sub(7, 5) == 2
-
