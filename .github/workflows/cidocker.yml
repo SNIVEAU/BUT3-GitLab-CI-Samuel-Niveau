@@ -25,8 +25,8 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/<nom-prenom>-backend:latest
-            ${{ secrets.DOCKER_REGISTRY }}/<nom-prenom>-backend:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-backend:latest
+            ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-backend:${{ github.sha }}
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -47,5 +47,5 @@ jobs:
           file: ./frontend/web.dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/<niveau-samuel>-frontend:latest
-            ${{ secrets.DOCKER_REGISTRY }}/<niveau-samuel>-frontend:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-frontend:latest
+            ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-frontend:${{ github.sha }}
