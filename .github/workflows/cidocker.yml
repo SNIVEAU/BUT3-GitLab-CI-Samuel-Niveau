@@ -23,7 +23,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./backend
-          file: ./frontend/api.dockerfile
+          file: ./backend/api.dockerfile
 
           push: true
           tags: |
@@ -32,7 +32,6 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-    environment: docker   # <-- idem
     steps:
       - uses: actions/checkout@v4
       
