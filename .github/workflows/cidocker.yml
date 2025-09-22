@@ -63,6 +63,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
       
+          
       - name: Install Ansible
         run: |
           sudo apt-get update
