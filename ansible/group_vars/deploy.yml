@@ -1,0 +1,34 @@
+---
+- hosts: apps
+  tasks:
+    - name: Create app directory
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        mode: '0755'
+
+    - name: Login to Docker registry
+      docker_login:
+        registry: "{{ registry }}"
+        username: "{{ registry_login }}"
+        password: "{{ registry_password }}"
+
+    - name: Copy docker-compose.yml
+      template:
+        src: docker-compose.yml
+        dest: "{{ app_directory }}/docker-compose.yml"
+
+    - name: Copy backend.env
+      template:
+        src: backend.env
+        dest: "{{ app_directory }}/backend.env"
+
+    - name: Pull Docker images
+      shell: docker compose pull
+      args:
+        chdir: "{{ app_directory }}"
+
+    - name: Start containers
+      shell: docker compose up -d --remove-orphans
+      args:
+        chdir: "{{ app_directory }}"

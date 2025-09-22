@@ -51,3 +51,26 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-frontend:latest
             ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-frontend:${{ github.sha }}
+  deploy-dev:
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+      
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+      
+      - name: Run Ansible playbook
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini deploy.yml \
+            -e "image_tag=${{ github.sha }}" \
+            -e "registry_password=${{ secrets.DOCKER_PASSWORD }}"
