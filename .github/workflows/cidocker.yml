@@ -60,10 +60,10 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519_22
+          chmod 600 ~/.ssh/id_ed25519_22
       
-          
+
       - name: Install Ansible
         run: |
           sudo apt-get update
