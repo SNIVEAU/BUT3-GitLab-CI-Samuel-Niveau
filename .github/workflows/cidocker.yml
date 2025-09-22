@@ -23,6 +23,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./backend
+          file: ./frontend/api.dockerfile
+
           push: true
           tags: |
             ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-backend:latest
