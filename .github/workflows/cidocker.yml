@@ -62,9 +62,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519_22
           chmod 600 ~/.ssh/id_ed25519_22
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_ed25519_22
-          ssh-keyscan -H dev22 >> ~/.ssh/known_hosts
+          ssh-keyscan -p 62222 -H dev22.iut.arcanit.io >> ~/.ssh/known_hosts
 
       - name: Install Ansible
         run: |
