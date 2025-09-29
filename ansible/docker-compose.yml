@@ -11,6 +11,7 @@ services:
       - "traefik.http.routers.dev-samuel-niveau-frontend.tls=true"
       - "traefik.http.services.dev-samuel-niveau-frontend.loadbalancer.server.port=80"
 
+      
   samuel-niveau-backend:
     container_name: samuel-niveau-backend
     image: docker.iut.arcanit.io/niveau-samuel-backend:{{ image_tag }}
