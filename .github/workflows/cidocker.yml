@@ -69,10 +69,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
 
-      - name: Test SSH connection
-        run: |
-          ssh -i ~/.ssh/id_ed25519_22 -p 62222 -o StrictHostKeyChecking=no student@dev22.iut.arcanit.io "echo 'Connexion OK depuis GitHub Actions'"
-
       - name: Run Ansible playbook
         run: |
           cd ansible
