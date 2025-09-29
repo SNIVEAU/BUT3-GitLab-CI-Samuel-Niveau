@@ -83,4 +83,5 @@ jobs:
             -e "registry_password=${{ secrets.DOCKER_PASSWORD }}" \
             -e "image_tag=${{ github.sha }}"
 
-            
+          
+          
