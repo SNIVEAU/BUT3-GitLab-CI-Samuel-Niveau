@@ -69,9 +69,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
 
+      - name: Test SSH connection
+        run: |
+          ssh -i ~/.ssh/id_ed25519_22 -p 62222 -o StrictHostKeyChecking=no student@dev22.iut.arcanit.io "echo 'Connexion OK depuis GitHub Actions'"
+
       - name: Run Ansible playbook
         run: |
           cd ansible
           ansible-playbook -i inventory.ini deploy.yml \
-            -e "image_tag=${{ github.sha }}" \
-            -e "registry_password=${{ secrets.DOCKER_PASSWORD }}"
+            -e "app_directory=/home/student/app" \
+            -e "registry=docker.iut.arcanit.io" \
+            -e "registry_login=${{ secrets.DOCKER_LOGIN }}" \
+            -e "registry_password=${{ secrets.DOCKER_PASSWORD }}" \
+            -e "image_tag=${{ github.sha }}"
