@@ -1,7 +1,7 @@
 services:
   samuel-niveau-frontend:
     container_name: samuel-niveau-frontend
-    image: docker.iut.arcanit.io/niveau-samuel-frontend:{{ image_tag }}
+    image: docker.iut.arcanit.io/niveau-samuel-frontend:latest
     restart: always
     networks: [traefik]
     labels:
@@ -14,7 +14,7 @@ services:
       
   samuel-niveau-backend:
     container_name: samuel-niveau-backend
-    image: docker.iut.arcanit.io/niveau-samuel-backend:{{ image_tag }}
+    image: docker.iut.arcanit.io/niveau-samuel-backend:latest
     restart: always
     env_file: backend.env
     networks: [traefik]
