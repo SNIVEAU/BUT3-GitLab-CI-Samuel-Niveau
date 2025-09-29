@@ -1,5 +1,7 @@
 ---
 - hosts: apps
+  vars_files:
+    - apps.yml
   tasks:
     - name: Create app directory
       file:
