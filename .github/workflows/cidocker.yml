@@ -60,8 +60,8 @@ jobs:
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519_22
-          chmod 600 ~/.ssh/id_ed25519_22
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 62222 -H dev22.iut.arcanit.io >> ~/.ssh/known_hosts
 
       - name: Install Ansible
