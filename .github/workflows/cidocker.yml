@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Log in to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Build and push Backend
         uses: docker/build-push-action@v6
         with:
@@ -33,14 +33,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Log in to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Build and push Frontend
         uses: docker/build-push-action@v6
         with:
@@ -51,32 +51,39 @@ jobs:
             ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-frontend:latest
             ${{ secrets.DOCKER_REGISTRY }}/niveau-samuel-frontend:${{ github.sha }}
 
+
   deploy-dev:
     needs: [build-backend, build-frontend]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    uses: ./.github/workflows/cd_3_environnement.yml
+    with:
+      image_tag: ${{ github.sha }}
+      environment: dev
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
 
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 62222 -H dev22.iut.arcanit.io >> ~/.ssh/known_hosts
+  deploy-test:
+    needs: deploy-dev
+    uses: ./.github/workflows/cd_3_environnement.yml
+    with:
+      environment: test
+      image_tag: ${{ github.sha }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
 
-      - name: Install Ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible
-
-      - name: Run Ansible playbook
-        run: |
-          cd ansible
-          ansible-playbook -i inventory.ini deploy.yml \
-            -e "app_directory=/home/student/app" \
-            -e "registry=docker.iut.arcanit.io" \
-            -e "registry_login=${{ secrets.DOCKER_LOGIN }}" \
-            -e "registry_password=${{ secrets.DOCKER_PASSWORD }}" \
-            -e "image_tag=${{ github.sha }}"
-
-          
+  deploy-prod:
+    needs: deploy-test
+    uses: ./.github/workflows/cd_3_environnement.yml
+    with:
+      environment: prod
+      image_tag: ${{ github.sha }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}

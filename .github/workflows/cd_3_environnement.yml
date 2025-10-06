@@ -1,0 +1,53 @@
+name: Deploy reusable workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environnement cible (dev, test, prod)"
+        required: true
+        type: string
+      image_tag:
+        description: "Tag de l'image Docker (commit SHA)"
+        required: true
+        type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      DOCKER_LOGIN:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+      DOCKER_REGISTRY:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 62222 -H dev22.iut.arcanit.io >> ~/.ssh/known_hosts
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ansible
+
+      - name: Run Ansible Playbook
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini deploy.yml \
+            -e "environment=${{ inputs.environment }}" \
+            -e "app_directory=/home/student/apps/niveau-samuel-${{ inputs.environment }}" \
+            -e "registry=${{ secrets.DOCKER_REGISTRY }}" \
+            -e "registry_login=${{ secrets.DOCKER_LOGIN }}" \
+            -e "registry_password=${{ secrets.DOCKER_PASSWORD }}" \
+            -e "image_tag=${{ inputs.image_tag }}"
