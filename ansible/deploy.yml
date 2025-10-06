@@ -18,12 +18,12 @@
 
     - name: Copy and template docker-compose.yml
       template:
-        src: docker-compose.yml.j2
+        src: docker-compose.yml
         dest: "{{ app_directory }}/docker-compose.yml"
 
     - name: Copy and template backend.env
       template:
-        src: backend.env.j2
+        src: backend.env
         dest: "{{ app_directory }}/backend.env"
 
     - name: Stop and remove old containers (if exist)
