@@ -45,9 +45,10 @@ jobs:
         run: |
           cd ansible
           ansible-playbook -i inventory.ini deploy.yml \
-            -e "environment=${{ inputs.environment }}" \
+            -e "app_environment=${{ inputs.environment }}" \
             -e "app_directory=/home/student/apps/niveau-samuel-${{ inputs.environment }}" \
             -e "registry=${{ secrets.DOCKER_REGISTRY }}" \
             -e "registry_login=${{ secrets.DOCKER_LOGIN }}" \
             -e "registry_password=${{ secrets.DOCKER_PASSWORD }}" \
-            -e "image_tag=${{ inputs.image_tag }}"
+            -e "image_tag=${{ inputs.image_tag }}" \
+            -e "environment_prefix=${{ inputs.environment == 'prod' && '' || format('{0}-', inputs.environment) }}"

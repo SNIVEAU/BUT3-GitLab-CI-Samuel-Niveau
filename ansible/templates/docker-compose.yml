@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  "{{ app_environment }}-samuel-niveau-frontend":
+    container_name: "{{ app_environment }}-samuel-niveau-frontend"
+    image: {{ registry }}/niveau-samuel-frontend:{{ image_tag }}
+    restart: always
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ app_environment }}-samuel-niveau-frontend.rule=Host(`{{ environment_prefix }}samuel-niveau.iut.arcanit.io`)"
+      - "traefik.http.routers.{{ app_environment }}-samuel-niveau-frontend.entrypoints=https"
+      - "traefik.http.routers.{{ app_environment }}-samuel-niveau-frontend.tls=true"
+      - "traefik.http.services.{{ app_environment }}-samuel-niveau-frontend.loadbalancer.server.port=80"
+
+  "{{ app_environment }}-samuel-niveau-backend":
+    container_name: "{{ app_environment }}-samuel-niveau-backend"
+    image: {{ registry }}/niveau-samuel-backend:{{ image_tag }}
+    restart: always
+    env_file:
+      - backend.env
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ app_environment }}-api-samuel-niveau-backend.rule=Host(`{{ environment_prefix }}api-samuel-niveau.iut.arcanit.io`)"
+      - "traefik.http.routers.{{ app_environment }}-api-samuel-niveau-backend.entrypoints=https"
+      - "traefik.http.routers.{{ app_environment }}-api-samuel-niveau-backend.tls=true"
+      - "traefik.http.services.{{ app_environment }}-api-samuel-niveau-backend.loadbalancer.server.port=80"
+
+networks:
+  traefik:
+    external: true

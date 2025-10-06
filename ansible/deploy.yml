@@ -20,11 +20,13 @@
       template:
         src: docker-compose.yml
         dest: "{{ app_directory }}/docker-compose.yml"
+      tags: template
 
     - name: Copy and template backend.env
       template:
         src: backend.env
         dest: "{{ app_directory }}/backend.env"
+      tags: template
 
     - name: Stop and remove old containers (if exist)
       shell: docker compose down --remove-orphans
