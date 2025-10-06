@@ -24,10 +24,25 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.environment }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: |
+          # Installation rapide sans mise à jour du cache si Ansible est déjà présent
+          if ! command -v ansible-playbook &> /dev/null; then
+            sudo apt-get update -q
+            sudo apt-get install -y ansible
+          else
+            echo "Ansible is already installed"
+          fi
 
       - name: Configure SSH
         run: |
@@ -35,11 +50,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 62222 -H dev22.iut.arcanit.io >> ~/.ssh/known_hosts
-
-      - name: Install Ansible
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ansible
 
       - name: Run Ansible Playbook
         run: |
